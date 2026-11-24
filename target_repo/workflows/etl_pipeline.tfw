@@ -1,0 +1,25 @@
+# Branching tree ETL workflow (valid acyclic tree)
+workflow: daily_metrics_etl
+meta env=staging
+
+task ingest:
+  command: echo
+  tags: extract
+  param message=raw events payload
+
+task normalize_upper:
+  command: upper
+  depends_on: ingest
+  tags: transform
+  param from=ingest
+
+task normalize_lower:
+  command: lower
+  depends_on: ingest
+  tags: transform
+  param from=ingest
+
+task count_upper:
+  command: word_count
+  depends_on: normalize_upper
+  tags: report

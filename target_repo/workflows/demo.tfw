@@ -1,0 +1,17 @@
+# Demo linear workflow for TaskFlow
+workflow: greeting_pipeline
+meta owner=platform
+
+task greet:
+  command: echo
+  tags: io, demo
+  param message=hello multi-agent world
+
+task shout:
+  command: upper
+  depends_on: greet
+  param from=greet
+
+task count:
+  command: word_count
+  depends_on: shout

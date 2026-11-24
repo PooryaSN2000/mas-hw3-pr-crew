@@ -1,0 +1,11 @@
+# Core starter dependencies (add your chosen agent framework such as langgraph, crewai, smolagents, pydantic-ai, etc.)
+openai>=1.50.0
+python-dotenv>=1.0.1
+fastmcp>=0.4.0
+networkx>=3.3
+pytest>=8.3.0
+ruff>=0.7.0
+
+# Lightweight OpenTelemetry tracing -> Arize Phoenix
+arize-phoenix-otel>=0.6.0
+openinference-instrumentation-openai>=0.1.18

@@ -1,0 +1,36 @@
+services:
+  # Default tracing UI: Arize Phoenix (lightweight, single-container, OpenTelemetry-native)
+  # Start with: docker compose up -d
+  # UI: http://localhost:6006
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    container_name: pr-crew-phoenix
+    ports:
+      - "6006:6006"   # Web UI & OTLP HTTP endpoint (/v1/traces)
+      - "4317:4317"   # OTLP gRPC endpoint
+    environment:
+      - PHOENIX_WORKING_DIR=/phoenix-data
+    volumes:
+      - phoenix_data:/phoenix-data
+    restart: unless-stopped
+
+  # Optional graph database for the Cartographer badge (Neo4j Community Edition)
+  # Start with: docker compose --profile graph up -d
+  # Browser UI: http://localhost:7474 (user: neo4j, pass: taskflow123)
+  neo4j:
+    image: neo4j:5-community
+    container_name: pr-crew-neo4j
+    profiles: ["graph"]
+    ports:
+      - "7474:7474"   # HTTP Browser UI
+      - "7687:7687"   # Bolt protocol
+    environment:
+      - NEO4J_AUTH=neo4j/taskflow123
+      - NEO4J_server_memory_heap_max__size=512m
+    volumes:
+      - neo4j_data:/data
+    restart: unless-stopped
+
+volumes:
+  phoenix_data:
+  neo4j_data:

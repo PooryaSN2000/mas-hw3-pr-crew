@@ -1,0 +1,45 @@
+# Release readiness verification pipeline
+workflow: release_audit
+meta team=release-eng
+
+task fetch_code:
+  command: echo
+  tags: prep
+  param message=commit-a8f31c
+
+task run_lint:
+  command: upper
+  depends_on: fetch_code
+  tags: check
+  param from=fetch_code
+
+task run_unit_tests:
+  command: lower
+  depends_on: fetch_code
+  tags: check
+  param from=fetch_code
+
+task run_sec_scan:
+  command: echo
+  depends_on: fetch_code
+  tags: security
+  param message=scan-ok
+
+task merge_checks:
+  command: concat
+  depends_on: run_lint, run_unit_tests
+  param sep=|
+
+task compliance_report:
+  command: concat
+  depends_on: run_sec_scan, run_unit_tests
+  param sep=|
+
+task release_gate:
+  command: word_count
+  depends_on: merge_checks, compliance_report
+
+task notify:
+  command: template
+  depends_on: release_gate
+  param template=release_gate_words={release_gate}
